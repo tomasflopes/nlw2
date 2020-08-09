@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from '../../styles/globalStyles';
-import { Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 const styles = StyleSheet.create({
   container: {
