@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import landingImage from '../../assets/images/landing.png';
 import studyIcon from '../../assets/images/icons/study.png';
@@ -9,9 +9,12 @@ import teachIcon from '../../assets/images/icons/teach.png';
 import heartIcon from '../../assets/images/icons/heart.png';
 
 import styles from './styles';
+import api from '../../services/api';
 
 export default function Landing() {
   const navigation = useNavigation();
+
+  const [totalConnections, setTotalConnections] = useState(0);
 
   function handleNavigateToTeachPage() {
     navigation.navigate('Teach');
@@ -20,6 +23,18 @@ export default function Landing() {
   function handleNavigateToStudyPage() {
     navigation.navigate('Study');
   }
+
+  async function getTotalConnections() {
+    const response = await api.get('/connections');
+
+    if (response.data) {
+      setTotalConnections(response.data.total);
+    }
+  }
+
+  useFocusEffect(() => {
+    getTotalConnections();
+  });
 
   return (
     <View style={styles.container}>
@@ -49,7 +64,8 @@ export default function Landing() {
       </View>
 
       <Text style={styles.totalConnectionsText}>
-        Total of 300 connections already made <Image source={heartIcon} />
+        Total of {totalConnections} connections already made{' '}
+        <Image source={heartIcon} />
       </Text>
     </View>
   );

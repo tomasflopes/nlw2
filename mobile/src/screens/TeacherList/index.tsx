@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, Picker } from 'react-native';
-import { BorderlessButton, RectButton } from 'react-native-gesture-handler';
+import { View, ScrollView, Text, Picker, TouchableOpacity } from 'react-native';
+import { BorderlessButton } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import PageHeader from '../../components/PageHeader';
-import TeacherItem from '../../components/TeacherItem';
+import TeacherItem, { ITeacher } from '../../components/TeacherItem';
 
 import { Feather } from '@expo/vector-icons';
+
+import api from '../../services/api';
 
 import { colors } from '../../styles/globalStyles';
 
@@ -16,7 +21,44 @@ export default function TeacherList() {
   const [dayOfWeek, setDayOfWeek] = useState('');
   const [time, setTime] = useState('');
 
+  const [teachers, setTeachers] = useState([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
+
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
+
+  async function searchTeachers() {
+    const response = await api.get('/classes', {
+      params: {
+        week_day: Number(dayOfWeek),
+        subject,
+        time,
+      },
+    });
+
+    if (response.data) {
+      setTeachers(response.data);
+    }
+
+    setIsFiltersVisible(false);
+    getFavorites();
+  }
+
+  async function getFavorites() {
+    const response = await AsyncStorage.getItem('favorites');
+
+    if (response) {
+      const favoritedTeachers = JSON.parse(response);
+      const favoritedTeachersIds = favoritedTeachers.map(
+        (favoriteTeacher: ITeacher) => favoriteTeacher.id
+      );
+
+      setFavorites(favoritedTeachersIds);
+    }
+  }
+
+  useFocusEffect(() => {
+    getFavorites();
+  });
 
   return (
     <View style={styles.container}>
@@ -41,7 +83,7 @@ export default function TeacherList() {
               }
             >
               <Picker.Item label='-- Pick a subject --' value={undefined} />
-              <Picker.Item value='Web Development' label='Web Development' />
+              <Picker.Item value='Programação' label='Web Development' />
               <Picker.Item value='Math' label='Math' />
               <Picker.Item value='English' label='English' />
               <Picker.Item value='History' label='History' />
@@ -135,9 +177,12 @@ export default function TeacherList() {
               </View>
             </View>
 
-            <RectButton style={styles.submitButton}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={searchTeachers}
+            >
               <Text style={styles.submitButtonText}>Filter</Text>
-            </RectButton>
+            </TouchableOpacity>
           </View>
         )}
       </PageHeader>
@@ -149,9 +194,13 @@ export default function TeacherList() {
           paddingBottom: 16,
         }}
       >
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
+        {teachers.map((teacher: ITeacher) => (
+          <TeacherItem
+            key={teacher.id}
+            teacher={teacher}
+            favorited={favorites.includes(teacher.id)}
+          />
+        ))}
       </ScrollView>
     </View>
   );
