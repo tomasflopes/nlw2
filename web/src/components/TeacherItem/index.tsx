@@ -2,41 +2,54 @@ import React from 'react';
 
 import whatsAppIcon from '../../assets/images/icons/whatsapp.svg';
 
+import api from '../../services/api';
+
 import './styles.css';
 
-const TeacherItem: React.FC = () => {
+export interface ITeacher {
+  id: number;
+  name: string;
+  avatar: string;
+  bio: string;
+  price: number;
+  subject: string;
+  whatsapp: string;
+}
+export interface Props {
+  teacher: ITeacher;
+}
+
+const TeacherItem: React.FC<Props> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('/connections', { user_id: teacher.id });
+  }
+
   return (
     <article className='teacher-item'>
       <header>
-        <img
-          src='https://avatars1.githubusercontent.com/u/50304854?s=460&u=9d63675e4b3fc664fe9ae6bf2855f4be7d32e1bc&v=4'
-          alt='Tomás Lopes'
-        />
+        <img src={teacher.avatar} alt={teacher.name} />
         <div>
-          <strong>Tomás Lopes</strong>
-          <span>Programação</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, cumque!
-        <br />
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam eaque,
-        nisi, ex facere, et nesciunt at autem neque minus tenetur eveniet
-        quibusdam corporis. Hic ab, consectetur fugiat autem molestias
-        laudantium!
-      </p>
+      <p>{teacher.bio}</p>
 
       <footer>
         <p>
           Price/Hour
-          <strong>20,00 €</strong>
+          <strong>{teacher.price} €</strong>
         </p>
 
-        <button type='button'>
+        <a
+          target='_blank'
+          href={`https://wa.me/${teacher.whatsapp}`}
+          onClick={createNewConnection}
+        >
           <img src={whatsAppIcon} alt='Contact' />
           Get in touch
-        </button>
+        </a>
       </footer>
     </article>
   );
