@@ -46,14 +46,14 @@ const TeacherList: React.FC = () => {
               searchTeachers(e);
             }}
             options={[
-              { value: 'Programação', label: 'Programação' },
-              { value: 'Matemática', label: 'Matemática' },
-              { value: 'Português', label: 'Português' },
-              { value: 'História', label: 'História' },
-              { value: 'Física', label: 'Física' },
-              { value: 'Química', label: 'Química' },
-              { value: 'Geografia', label: 'Geografia' },
-              { value: 'Educação Física', label: 'Educação Física' },
+              { value: 'Web Development', label: 'Web Development' },
+              { value: 'Math', label: 'Math' },
+              { value: 'English', label: 'English' },
+              { value: 'History', label: 'History' },
+              { value: 'Physics', label: 'Physics' },
+              { value: 'Chemistry', label: 'Chemistry' },
+              { value: 'Geography', label: 'Geography' },
+              { value: 'Sports', label: 'Sports' },
             ]}
           />
 

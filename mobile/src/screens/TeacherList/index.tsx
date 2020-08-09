@@ -83,7 +83,7 @@ export default function TeacherList() {
               }
             >
               <Picker.Item label='-- Pick a subject --' value={undefined} />
-              <Picker.Item value='Programação' label='Web Development' />
+              <Picker.Item value='Web Development' label='Web Development' />
               <Picker.Item value='Math' label='Math' />
               <Picker.Item value='English' label='English' />
               <Picker.Item value='History' label='History' />
